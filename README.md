@@ -5,8 +5,8 @@ An Ubuntu based Mesos Master container, packaged with Logstash-Forwarder and man
 
 ##### Version Information:
 
-* **Container Release:** 1.0.0
-* **Mesos:** 0.23.0
+* **Container Release:** 1.1.0
+* **Mesos:** 0.24.1
 
 ##### Services include:
 * **[Mesos Master](#mesos-master)** - Primary process that manages the collective offering of resources from the Mesos Slaves.
