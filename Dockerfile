@@ -8,6 +8,7 @@
 ################################################################################
 
 FROM mrbobbytables/mesos-base:1.1.0
+
 MAINTAINER Bob Killen / killen.bob@gmail.com / @mrbobbytables
 
 COPY ./skel /
