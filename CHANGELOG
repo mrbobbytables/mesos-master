@@ -1,5 +1,7 @@
 2015-10-20 - 1.1.0:
  - Bump Mesos version to 0.24.1
+ - Docs and examples updated to reflect new ADVERTISE capabilities.
+ - init script no longer auto-sets MESOS_HOSTNAME in local environment
 
 2015-10-16 - 1.0.2:
   - Bump to Mesos 0.23.1-0.2.61.ubuntu1404
