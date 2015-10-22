@@ -35,9 +35,9 @@ An Ubuntu based Mesos Master container, packaged with Logstash-Forwarder and man
 
 All mesos commands should be passed via environment variables (please see the [example run command](#example-run-command) below). For Mesos documentation, please see the configuration docs associated with the release here: [mesos@4487380](https://github.com/apache/mesos/blob/44873806c2bb55da37e9adbece938274d8cd7c48/docs/configuration.md).
 
-With the release of Mesos 0.24.0 the Mesos related processes no longer require running with host networking enabled. This complicates deployments slightly, but overall adds significantly to the portability of the containers and frameworks.
+With the release of Mesos 0.24.0 the Mesos Master (and frameworks) no longer requires running with host networking enabled. This complicates deployments slightly, but overall adds significantly to the portability of the containers and frameworks.
 
-In all forms of deployment, if the Mesos Master container is be accessible by other hosts or processes. There are collection of variables that must be set (if not using host networking).
+In all forms of deployment, if the Mesos Master container is be accessible by other hosts or processes. There are collection of variables that must be set.
 
 * `LIBPROCESS_IP` - The IP in which libprocess will bind to (defaults to `0.0.0.0`)
 
@@ -51,6 +51,7 @@ In all forms of deployment, if the Mesos Master container is be accessible by ot
 
 * `MESOS_ADVERTISE_PORT` - If set, this will be the 'advertised' or 'externalized' port used for communication with the Mesos Master.
 
+If deploying **WITH** host networking, the `*_ADVERTISE_*` variables may be omitted.
 
 In a local deployment, other than the above the only other variable that must be set is `MESOS_ZK`.
 
@@ -108,7 +109,7 @@ All supervisord configs can be found in `/etc/supervisor/conf.d/`. Services by d
 In some cases (such as with zookeeper), it is possible to specify different logging levels and formats for each location.
 
 **Logstash-Forwarder**
-The Logstash-Forwarder binary and default configuration file can be found in `/skel/opt/logstash-forwarder`. It is ideal to bake the Logstash Server certificate into the base container at this location. If the certificate is called `logstash-forwarder.crt`, the default supplied Logstash-Forwarder config should not need to be modified, and the server setting may be passed through the `SERICE_LOGSTASH_FORWARDER_ADDRESS` environment variable.
+The Logstash-Forwarder binary and default configuration file can be found in `/skel/opt/logstash-forwarder`. It is ideal to bake the Logstash Server certificate into the base container at this location. If the certificate is called `logstash-forwarder.crt`, the default supplied Logstash-Forwarder config should not need to be modified, and the server setting may be passed through the `SERVICE_LOGSTASH_FORWARDER_ADDRESS` environment variable.
 
 In practice, the supplied Logstash-Forwarder config should be used as an example to produce one tailored to each deployment.
 
@@ -353,6 +354,8 @@ Redpill - Supervisor status monitor. Terminates the supervisor process if any sp
 In the event of an issue, the `ENVIRONMENT` variable can be set to `debug`.  This will stop the container from shipping logs and prevent it from terminating if one of the services enters a failed state.
 
 For mesos itself, the `MESOS_LOGGING_LEVEL` variable can be set to `INFO` or `WARNING` to further diagnose the problem.
+
+
 
 
 
