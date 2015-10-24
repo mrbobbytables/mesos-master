@@ -38,8 +38,6 @@ init_vars() {
       export SERVICE_REDPILL=${SERVICE_REDPILL:-disabled}
       ;;
    local|*)
-      local local_ip="$(ip addr show eth0 | grep -m 1 -P -o '(?<=inet )[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}')"
-      export MESOS_HOSTNAME=${MESOS_HOSTNAME:-"$local_ip"}
       export SERVICE_LOGSTASH_FORWARDER=${SERVICE_LOGSTASH_FORWARDER:-disabled}
       export SERVICE_REDPILL=${SERVICE_REDPILL:-enabled}
       export MESOS_WORK_DIR=${MESOS_WORK_DIR:-/var/lib/mesos}
