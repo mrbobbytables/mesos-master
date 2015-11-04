@@ -1,3 +1,6 @@
+2015-11-04 - 1.1.1:
+ - Fixed issue with MESOS_LOG_DIR not logging to correct directory.
+
 2015-10-20 - 1.1.0:
  - Bump Mesos version to 0.24.1
  - Docs and examples updated to reflect new ADVERTISE capabilities.

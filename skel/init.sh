@@ -21,7 +21,7 @@ init_vars() {
   export PARENT_HOST=${PARENT_HOST:-unknown}
 
   # Default logging level for Mesos is INFO. No need to set.
-  export MESOS_LOG_DIR==${MESOS_LOG_DIR:-/var/log/mesos}
+  export MESOS_LOG_DIR=${MESOS_LOG_DIR:-/var/log/mesos}
 
   export SERVICE_LOGSTASH_FORWARDER_CONF=${SERVICE_LOGSTASH_FORWARDER_CONF:-/opt/logstash-forwarder/mesos-master.conf}
   export SERVICE_REDPILL_MONITOR=${SERVICE_REDPILL_MONITOR:-mesos}
