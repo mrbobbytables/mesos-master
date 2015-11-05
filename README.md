@@ -355,6 +355,34 @@ In the event of an issue, the `ENVIRONMENT` variable can be set to `debug`.  Thi
 
 For mesos itself, the `MESOS_LOGGING_LEVEL` variable can be set to `INFO` or `WARNING` to further diagnose the problem.
 
+If further information is needed; logging may be controlled directly by configuring [glog](https://github.com/google/glog) loggig library used by Mesos. For reference; please see the table below:
+
+**Note:** not all of the glog settings are overridable. Mesos does dictate some of them. Main ones of note are `GLOG_v` to increase log verbosity, and `GLOG_max_log_size` if log growth and rotation must be tuned.
+
+| **Environment Variable Name**    | **Type** | **Default** | **Description**                                                                                                                                                                                             |
+|----------------------------------|----------|-------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `GLOG_logtostderr`               | `bool`   | `FALSE`     | Log messages go to stderr instead of logfiles.                                                                                                                                                              |
+| `GLOG_alsologtostderr`           | `bool`   | `FALSE`     | Log messages go to stderr in addition to logfiles.                                                                                                                                                         |
+| `GLOG_colorlogtostderr`          | `bool`   | `FALSE`     | Color messages logged to stderr (if supported by terminal).                                                                                                                                                 |
+| `GLOG_stderrthreshold`           | `int`    | `2`         | Log messages at or above this level are copied to stderr in addition to logfiles.  This flag obsoletes –alsologtostderr.                                                                                    |
+| `GLOG_alsologtomail`             | `string` |             | Log messages go to these email addresses in addition to logfiles.                                                                                                                                           |
+| `GLOG_logmaillevel`              | `int`    | `999`       | Email log messages logged at this level or higher (0 means email all; 3 means email FATAL only ...)                                                                                                         |
+| `GLOG_logmailer`                 | `string` | `/bin/mail` | Mailer used to send logging email.                                                                                                                                                                          |
+| `GLOG_drop_log_memory`           | `bool`   | `TRUE`      | Drop in-memory buffers of log contents. Logs can grow very quickly and they are rarely read before they need to be evicted from memory. Instead, drop them from memory as soon as they are flushed to disk. |
+| `GLOG_log_prefix`                | `bool`   | `TRUE`      | Prepend the log prefix to the start of each log line.                                                                                                                                                       |
+| `GLOG_minloglevel`               | `int`    | `0`         | Messages logged at a lower level than this don't actually get logged anywhere.                                                                                                                              |
+| `GLOG_logbuflevel`               | `int`    | `0`         | Buffer log messages logged at this level or lower (-1 means don't buffer; 0 means buffer INFO only...).                                                                                                     |
+| `GLOG_logbufsecs`                | `int`    | `30`        | Buffer log messages for at most this many seconds.                                                                                                                                                          |
+| `GLOG_logfile_mode`              | `int`    | `0644`      | Log file mode/permissions.                                                                                                                                                                                  |
+| `GLOG_log_dir`                   | `string` |             | If specified, logfiles are written into this directory instead of the default logging directory.                                                                                                            |
+| `GLOG_log_link`                  | `string` |             | Put additional links to the log files in this directory.                                                                                                                                                    |
+| `GLOG_max_log_size`              | `int`    | `1800`      | Approx. maximum log file size (in MB). A value of 0 will be silently overridden to 1.                                                                                                                       |
+| `GLOG_stop_logging_if_full_disk` | `bool`   | `FALSE`     | Stop attempting to log to disk if the disk is full.                                                                                                                                                         |
+| `GLOG_log_backtrace_at`          | `string` |             | Emit a backtrace when logging at file:linenum.                                                                                                                                                              |
+| `GLOG_v`                         | `int`    | `0`         | Show all VLOG(m) messages for m less or equal the value of this flag.                                                                                                                                       |
+
+
+
 
 
 
