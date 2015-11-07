@@ -23,6 +23,7 @@ init_vars() {
   # Default logging level for Mesos is INFO. No need to set.
   export MESOS_LOG_DIR=${MESOS_LOG_DIR:-/var/log/mesos}
 
+  export SERVICE_LOGROTATE_SCRIPT=${SERVICE_LOGROTATE_SCRIPT:-/opt/scripts/purge-mesos-logs.sh}
   export SERVICE_LOGSTASH_FORWARDER_CONF=${SERVICE_LOGSTASH_FORWARDER_CONF:-/opt/logstash-forwarder/mesos-master.conf}
   export SERVICE_REDPILL_MONITOR=${SERVICE_REDPILL_MONITOR:-mesos}
 
@@ -30,14 +31,19 @@ init_vars() {
 
   case "${ENVIRONMENT,,}" in
     prod|production|dev|development)
+      export GLOG_max_log_size=${GLOG_max_log_size:-5}
+      export SERVICE_LOGROTATE=${SERVICE_LOGROTATE:-enabled}
       export SERVICE_LOGSTASH_FORWARDER=${SERVICE_LOGSTASH_FORWARDER:-enabled}
       export SERVICE_REDPILL=${SERVICE_REDPILL:-enabled}
       ;;
     debug)
+      export SERVICE_LOGROTATE=${SERVICE_LOGROTATE:-disabled}
       export SERVICE_LOGSTASH_FORWARDER=${SERVICE_LOGSTASH_FORWARDER:-disabled}
       export SERVICE_REDPILL=${SERVICE_REDPILL:-disabled}
       ;;
    local|*)
+      export GLOG_max_log_size=${GLOG_max_log_size:-5}
+      export SERVICE_LOGROTATE=${SERVICE_LOGROTATE:-enabled}
       export SERVICE_LOGSTASH_FORWARDER=${SERVICE_LOGSTASH_FORWARDER:-disabled}
       export SERVICE_REDPILL=${SERVICE_REDPILL:-enabled}
       export MESOS_WORK_DIR=${MESOS_WORK_DIR:-/var/lib/mesos}
@@ -52,6 +58,7 @@ main() {
   echo "[$(date)][App-Name] $APP_NAME"
   echo "[$(date)][Environment] $ENVIRONMENT"
 
+  __config_service_logrotate
   __config_service_logstash_forwarder
   __config_service_redpill
 

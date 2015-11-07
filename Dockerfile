@@ -7,13 +7,13 @@
 # Mesos Master container. Mesos Version is tied to mesos-base container.
 ################################################################################
 
-FROM mrbobbytables/mesos-base:1.1.0
+FROM mrbobbytables/mesos-base:1.1.1
 
 MAINTAINER Bob Killen / killen.bob@gmail.com / @mrbobbytables
 
 COPY ./skel /
 
-RUN chmod +x init.sh            \
+RUN chmod +x init.sh  \
  && chown -R logstash-forwarder:logstash-forwarder /opt/logstash-forwarder
 
 EXPOSE 5050
