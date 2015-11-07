@@ -31,7 +31,7 @@ init_vars() {
 
   case "${ENVIRONMENT,,}" in
     prod|production|dev|development)
-      export GLOG_max_log_size=${GLOG_max_log_size:-5}
+      export GLOG_max_log_size=${GLOG_max_log_size:-10}
       export SERVICE_LOGROTATE=${SERVICE_LOGROTATE:-enabled}
       export SERVICE_LOGSTASH_FORWARDER=${SERVICE_LOGSTASH_FORWARDER:-enabled}
       export SERVICE_REDPILL=${SERVICE_REDPILL:-enabled}
@@ -42,7 +42,7 @@ init_vars() {
       export SERVICE_REDPILL=${SERVICE_REDPILL:-disabled}
       ;;
    local|*)
-      export GLOG_max_log_size=${GLOG_max_log_size:-5}
+      export GLOG_max_log_size=${GLOG_max_log_size:-10}
       export SERVICE_LOGROTATE=${SERVICE_LOGROTATE:-enabled}
       export SERVICE_LOGSTASH_FORWARDER=${SERVICE_LOGSTASH_FORWARDER:-disabled}
       export SERVICE_REDPILL=${SERVICE_REDPILL:-enabled}
