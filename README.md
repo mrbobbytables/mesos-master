@@ -340,6 +340,21 @@ logrotate.sh - Small wrapper script for logrotate.
 -h | --help         This usage text.
 ```
 
+##### Supplied Cleanup Script
+
+The below cleanup script will remove all but the latest 5 rotated logs.
+```
+#!/bin/bash
+
+mld=${MESOS_LOG_DIR:-/var/log/mesos}
+
+cd "$mld"
+
+(ls -t | grep 'log.INFO.*'|head -n 5;ls)|sort|uniq -u|grep 'log.INFO.*'|xargs --no-run-if-empty rm
+(ls -t | grep 'log.ERROR.*'|head -n 5;ls)|sort|uniq -u|grep 'log.ERROR.*'|xargs --no-run-if-empty rm
+(ls -t | grep 'log.WARNING.*'|head -n 5;ls)|sort|uniq -u|grep 'log.WARNING.*'|xargs --no-run-if-empty rm
+```
+
 
 ---
 
@@ -359,7 +374,7 @@ Logstash-Forwarder is a lightweight application that collects and forwards logs 
 | `SERVICE_LOGSTASH_FORWARDER_CONF`    | `/opt/logstash-forwarder/mesos-master.conf`                                            |
 | `SERVICE_LOGSTASH_FORWARDER_ADDRESS` |                                                                                        |
 | `SERVICE_LOGSTASH_FORWARDER_CERT`    |                                                                                        |
-| `SERVICE_LOGSTASH_FORWARDER_CMD`     | `/opt/logstash-forwarder/logstash-fowarder -cofig="${SERVICE_LOGSTASH_FOWARDER_CONF}"` |
+| `SERVICE_LOGSTASH_FORWARDER_CMD`     | `/opt/logstash-forwarder/logstash-fowarder -config="${SERVICE_LOGSTASH_FOWARDER_CONF}"` |
 
 
 ##### Description
