@@ -5,11 +5,12 @@ An Ubuntu based Mesos Master container, packaged with Logstash-Forwarder and man
 
 ##### Version Information:
 
-* **Container Release:** 1.1.1
+* **Container Release:** 1.1.2
 * **Mesos:** 0.24.1-0.2.35.ubuntu1404
 
 ##### Services include:
 * **[Mesos Master](#mesos-master)** - Primary process that manages the collective offering of resources from the Mesos Slaves.
+* **[Logrotate](#logrotate)** - A script and application that aid in pruning log files.
 * **[Logstash-Forwarder](#logstash-forwarder)** - A lightweight log collector and shipper for use with [Logstash](https://www.elastic.co/products/logstash).
 * **[Redpill](#redpill)** - A bash script and healthcheck for supervisord managed services. It is capable of running cleanup scripts that should be executed upon container termination.
 
@@ -24,6 +25,7 @@ An Ubuntu based Mesos Master container, packaged with Logstash-Forwarder and man
 * [Important Environment Variables](#important-environment-variables)
 * [Service Configuration](#service-configuration)
  * [Mesos-Master](#mesos)
+ * [Logrotate](#logrotate)
  * [Logstash-Forwarder](#logstash-forwarder)
  * [Redpill](#redpill)
 * [Troubleshooting](#troubleshooting)
@@ -98,7 +100,7 @@ mesos-master
 ### Modification and Anatomy of the Project
 
 **File Structure**
-The directory `skel` in the project root maps to the root of the file system once the container is built. Files and folders placed there will map to their corresponding location within the container. 
+The directory `skel` in the project root maps to the root of the file system once the container is built. Files and folders placed there will map to their corresponding location within the container.
 
 **Init**
 The init script (`./init.sh`) found at the root of the directory is the entry process for the container. It's role is to simply set specific environment variables and modify any subsequently required configuration files.
@@ -138,6 +140,10 @@ Below is the minimum list of variables to be aware of when deploying the Mesos M
 | `MESOS_QUORUM`                    |                                             |
 | `MESOS_WORK_DIR`                  |                                             |
 | `MESOS_ZK`                        |                                             |
+| `GLOG_max_log_size`               |                                             |
+| `SERVICE_LOGROTATE`               |                                             |
+| `SERVICE_LOGROTATE_INTERVAL`      | `3600` (set in script by default)           |
+| `SERVICE_LOGROTATE_SCRIPT`        | `/opt/scripts/purge-mesos-logs.sh`          |
 | `SERVICE_LOGSTASH_FORWARDER`      |                                             |
 | `SERVICE_LOGSTASH_FORWARDER_CONF` | `/opt/logstash-forwarder/mesos-master.conf` |
 | `SERVICE_REDPILL`                 |                                             |
@@ -173,6 +179,14 @@ Below is the minimum list of variables to be aware of when deploying the Mesos M
 
 * `MESOS_ZK` - The zookeeper URL used by Mesos for leader election e.g. `zk://10.10.0.11:2181,10.10.0.12:2181,10.10.0.13:2181/mesos`.
 
+* `GLOG_max_file_size` - The size in Megabytes that the mesos log file(s) will be allowed to grow to before rotation.
+
+* `SERVICE_LOGROTATE` - Enables or disabled the Logrotate service. This will be set automatically depending on the environment. (**Options:** `enabled` or `disabled`)
+
+* `SERVICE_LOGROTATE_INTERVAL` - The time in seconds between runs of logrotate or the logrotate script. The default (3600 or 1 hour) is set by default in the logrotate script automatically.
+
+* `SERVICE_LOGROTATE_SCRIPT` - The path to the script that should be executed instead of logrotate itself to clean up logs.
+
 * `SERVICE_LOGSTASH_FORWARDER` - Enables or disables the Logstash-Forwarder service. Set automatically depending on the `ENVIRONMENT`. See the Environment section below.  (**Options:** `enabled` or `disabled`)
 
 * `SERVICE_LOGSTASH_FORWARDER_CONF` - The path to the logstash-forwarder configuration.
@@ -190,6 +204,8 @@ Below is the minimum list of variables to be aware of when deploying the Mesos M
 
 | **Variable**                 | **Default**                |
 |------------------------------|----------------------------|
+| `GLOG_max_log_size`          | `10`                       |
+| `SERVICE_LOGROATE`           | `enabled`                  |
 | `SERVICE_LOGSTASH_FORWARDER` | `disabled`                 |
 | `SERVICE_REDPILL`            | `enabled`                  |
 | `MESOS_WORK_DIR`             | `/var/lib/mesos`           |
@@ -199,6 +215,8 @@ Below is the minimum list of variables to be aware of when deploying the Mesos M
 
 | **Variable**                 | **Default** |
 |------------------------------|-------------|
+| `GLOG_max_log_size`          | `10`        |
+| `SERVICE_LOGROATE`           | `enabled`   |
 | `SERVICE_LOGSTASH_FORWARDER` | `enabled`   |
 | `SERVICE_REDPILL`            | `enabled`   |
 
@@ -207,6 +225,7 @@ Below is the minimum list of variables to be aware of when deploying the Mesos M
 
 | **Variable**                 | **Default** |
 |------------------------------|-------------|
+| `SERVICE_LOGROATE`           | `disabled`  |
 | `SERVICE_LOGSTASH_FORWARDER` | `disabled`  |
 | `SERVICE_REDPILL`            | `disabled`  |
 
@@ -218,7 +237,7 @@ Below is the minimum list of variables to be aware of when deploying the Mesos M
 
 ---
 
-#### Mesos-Master
+### Mesos-Master
 
 
 As stated in the [Usage](#usage) section, Mesos-slave configuration information can be found in the github docs releated to the Mesos Release: [mesos@4487380](https://github.com/apache/mesos/blob/44873806c2bb55da37e9adbece938274d8cd7c48/docs/configuration.md).
@@ -269,6 +288,61 @@ The actual mesos start command is passed to supervisor via the `SERVICE_MESOS_CM
 
 
 ---
+
+### Logrotate
+
+The logrotate script is a small simple script that will either call and execute logrotate on a given interval; or execute a supplied script. This is useful for applications that do not perform their own log cleanup.
+
+#### Logrotate Environment Variables
+
+##### Defaults
+
+| **Variable**                 | **Default**                        |
+|------------------------------|------------------------------------|
+| `SERVICE_LOGROTATE`          |                                    |
+| `SERVICE_LOGROTATE_INTERVAL` | `3600`                             |
+| `SERVICE_LOGROTATE_CONFIG`   | `/etc/logrotate.conf`              |
+| `SERVICE_LOGROTATE_SCRIPT`   | `/opt/scripts/purge-mesos-logs.sh` |
+| `SERVICE_LOGROTATE_FORCE`    |                                    |
+| `SERVICE_LOGROTATE_VERBOSE`  |                                    |
+| `SERVICE_LOGROTATE_DEBUG`    |                                    |
+| `SERVICE_LOGROTATE_CMD`      | `/opt/script/logrotate.sh <flags>` |
+
+##### Description
+
+* `SERVICE_LOGROTATE` - Enables or disables the Logrotate service. Set automatically depending on the `ENVIRONMENT`. See the Environment section.  (**Options:** `enabled` or `disabled`)
+
+* `SERVICE_LOGROTATE_INTERVAL` - The time in seconds between run of either the logrotate command or the provided logrotate script. Default is set to `3600` or 1 hour in the script itself.
+
+* `SERVICE_LOGROTATE_CONFIG` - The path to the logrotate config file. If neither config or script is provided, it will default to `/etc/logrotate.conf`.
+
+* `SERVICE_LOGROTATE_SCRIPT` - A script that should be executed on the provided interval. Useful to do cleanup of logs for applications that already handle rotation, or if additional processing is required.
+
+* `SERVICE_LOGROTATE_FORCE` - If present, passes the 'force' command to logrotate. Will be ignored if a script is provided.
+
+* `SERVICE_LOGROTATE_VERBOSE` - If present, passes the 'verbose' command to logrotate. Will be ignored if a script is provided.
+
+* `SERVICE_LOGROTATE_DEBUG` - If present, passed the 'debug' command to logrotate. Will be ignored if a script is provided.
+
+* `SERVICE_LOGROTATE_CMD` - The command that is passed to supervisor. If overriding, must be an escaped python string expression. Please see the [Supervisord Command Documentation](http://supervisord.org/configuration.html#program-x-section-settings) for further information.
+
+
+##### Logrotate Script Help Text
+```
+root@ec58ca7459cb:/opt/scripts# ./logrotate.sh --help
+logrotate.sh - Small wrapper script for logrotate.
+-i | --interval     The interval in seconds that logrotate should run.
+-c | --config       Path to the logrotate config.
+-s | --script       A script to be executed in place of logrotate.
+-f | --force        Forces log rotation.
+-v | --verbose      Display verbose output.
+-d | --debug        Enable debugging, and implies verbose output. No state file changes.
+-h | --help         This usage text.
+```
+
+
+---
+
 
 ### Logstash-Forwarder
 
@@ -380,10 +454,4 @@ If further information is needed; logging may be controlled directly by configur
 | `GLOG_stop_logging_if_full_disk` | `bool`   | `FALSE`     | Stop attempting to log to disk if the disk is full.                                                                                                                                                         |
 | `GLOG_log_backtrace_at`          | `string` |             | Emit a backtrace when logging at file:linenum.                                                                                                                                                              |
 | `GLOG_v`                         | `int`    | `0`         | Show all VLOG(m) messages for m less or equal the value of this flag.                                                                                                                                       |
-
-
-
-
-
-
 
