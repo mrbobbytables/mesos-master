@@ -301,7 +301,7 @@ The logrotate script is a small simple script that will either call and execute 
 |------------------------------|------------------------------------|
 | `SERVICE_LOGROTATE`          |                                    |
 | `SERVICE_LOGROTATE_INTERVAL` | `3600`                             |
-| `SERVICE_LOGROTATE_CONFIG`   | `/etc/logrotate.conf`              |
+| `SERVICE_LOGROTATE_CONFIG`   |                                    |
 | `SERVICE_LOGROTATE_SCRIPT`   | `/opt/scripts/purge-mesos-logs.sh` |
 | `SERVICE_LOGROTATE_FORCE`    |                                    |
 | `SERVICE_LOGROTATE_VERBOSE`  |                                    |
