@@ -5,8 +5,8 @@ An Ubuntu based Mesos Master container, packaged with Logstash-Forwarder and man
 
 ##### Version Information:
 
-* **Container Release:** 1.1.3
-* **Mesos:** 0.24.1-0.2.35.ubuntu1404
+* **Container Release:** 1.1.4
+* **Mesos:** 0.25.0-0.2.70.ubuntu1404
 
 ##### Services include:
 * **[Mesos Master](#mesos-master)** - Primary process that manages the collective offering of resources from the Mesos Slaves.
@@ -35,7 +35,7 @@ An Ubuntu based Mesos Master container, packaged with Logstash-Forwarder and man
 
 ### Usage
 
-All mesos commands should be passed via environment variables (please see the [example run command](#example-run-command) below). For Mesos documentation, please see the configuration docs associated with the release here: [mesos@4487380](https://github.com/apache/mesos/blob/44873806c2bb55da37e9adbece938274d8cd7c48/docs/configuration.md).
+All mesos commands should be passed via environment variables (please see the [example run command](#example-run-command) below). For Mesos documentation, please see the configuration docs associated with the release here: [mesos@2dd7f7e](https://github.com/apache/mesos/tree/2dd7f7ee115fe00b8e098b0a10762a4fa8f4600f/docs/configuration.md).
 
 With the release of Mesos 0.24.0 the Mesos Master (and frameworks) no longer requires running with host networking enabled. This complicates deployments slightly, but overall adds significantly to the portability of the containers and frameworks.
 
@@ -70,7 +70,7 @@ In a production deployment with high availability, the Master container should b
 ---
 
 ### Example Run Command
-```
+```bash
 docker run -d              \
 --name master-01           \
 --hostname master-01       \
@@ -240,7 +240,7 @@ Below is the minimum list of variables to be aware of when deploying the Mesos M
 ### Mesos-Master
 
 
-As stated in the [Usage](#usage) section, Mesos-slave configuration information can be found in the github docs releated to the Mesos Release: [mesos@4487380](https://github.com/apache/mesos/blob/44873806c2bb55da37e9adbece938274d8cd7c48/docs/configuration.md).
+As stated in the [Usage](#usage) section, Mesos-slave configuration information can be found in the github docs releated to the Mesos Release: [mesos@2dd7f7e](https://github.com/apache/mesos/tree/2dd7f7ee115fe00b8e098b0a10762a4fa8f4600f/docs/configuration.md).
 
 
 The actual mesos start command is passed to supervisor via the `SERVICE_MESOS_CMD` environment variable, and defaults to `mesos-master`. It can be overridden by specifying the `SERVICE_MESOS_CMD` at run time.
@@ -343,7 +343,7 @@ logrotate.sh - Small wrapper script for logrotate.
 ##### Supplied Cleanup Script
 
 The below cleanup script will remove all but the latest 5 rotated logs.
-```
+```bash
 #!/bin/bash
 
 mld=${MESOS_LOG_DIR:-/var/log/mesos}
