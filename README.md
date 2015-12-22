@@ -5,8 +5,8 @@ An Ubuntu based Mesos Master container, packaged with Logstash-Forwarder and man
 
 ##### Version Information:
 
-* **Container Release:** 1.1.4
-* **Mesos:** 0.25.0-0.2.70.ubuntu1404
+* **Container Release:** 1.1.5
+* **Mesos:** 0.26.0-0.2.145.ubuntu1404
 
 ##### Services include:
 * **[Mesos Master](#mesos-master)** - Primary process that manages the collective offering of resources from the Mesos Slaves.
@@ -35,7 +35,7 @@ An Ubuntu based Mesos Master container, packaged with Logstash-Forwarder and man
 
 ### Usage
 
-All mesos commands should be passed via environment variables (please see the [example run command](#example-run-command) below). For Mesos documentation, please see the configuration docs associated with the release here: [mesos@2dd7f7e](https://github.com/apache/mesos/tree/2dd7f7ee115fe00b8e098b0a10762a4fa8f4600f/docs/configuration.md).
+All mesos commands should be passed via environment variables (please see the [example run command](#example-run-command) below). For Mesos documentation, please see the configuration docs associated with the release here: [mesos@d3717e5](https://github.com/apache/mesos/tree/d3717e5c4d1bf4fca5c41cd7ea54fae489028faa/docs/configuration.md).
 
 With the release of Mesos 0.24.0 the Mesos Master (and frameworks) no longer requires running with host networking enabled. This complicates deployments slightly, but overall adds significantly to the portability of the containers and frameworks.
 
@@ -106,7 +106,7 @@ The directory `skel` in the project root maps to the root of the file system onc
 The init script (`./init.sh`) found at the root of the directory is the entry process for the container. It's role is to simply set specific environment variables and modify any subsequently required configuration files.
 
 **Supervisord**
-All supervisord configs can be found in `/etc/supervisor/conf.d/`. Services by default will redirect their stdout to `/dev/fd/1` and stderr to `/dev/fd/2` allowing for service's console output to be displayed. Most applications can log to both stdout and their respectively specified log file. 
+All supervisord configs can be found in `/etc/supervisor/conf.d/`. Services by default will redirect their stdout to `/dev/fd/1` and stderr to `/dev/fd/2` allowing for service's console output to be displayed. Most applications can log to both stdout and their respectively specified log file.
 
 In some cases (such as with zookeeper), it is possible to specify different logging levels and formats for each location.
 
@@ -240,7 +240,7 @@ Below is the minimum list of variables to be aware of when deploying the Mesos M
 ### Mesos-Master
 
 
-As stated in the [Usage](#usage) section, Mesos-slave configuration information can be found in the github docs releated to the Mesos Release: [mesos@2dd7f7e](https://github.com/apache/mesos/tree/2dd7f7ee115fe00b8e098b0a10762a4fa8f4600f/docs/configuration.md).
+As stated in the [Usage](#usage) section, Mesos-slave configuration information can be found in the github docs releated to the Mesos Release: [mesos@d3717e5](https://github.com/apache/mesos/tree/d3717e5c4d1bf4fca5c41cd7ea54fae489028faa/docs/configuration.md).
 
 
 The actual mesos start command is passed to supervisor via the `SERVICE_MESOS_CMD` environment variable, and defaults to `mesos-master`. It can be overridden by specifying the `SERVICE_MESOS_CMD` at run time.
