@@ -23,6 +23,12 @@ init_vars() {
   # Default logging level for Mesos is INFO. No need to set.
   export MESOS_LOG_DIR=${MESOS_LOG_DIR:-/var/log/mesos}
 
+  # if consul template is to be used, configure rsyslog
+  export SERVICE_CONSUL_TEMPLATE=${SERVICE_CONSUL_TEMPLATE:-disabled}
+  if [[ "$SERVICE_CONSUL_TEMPLATE" == "enabled" ]]; then
+    export SERVICE_RSYSLOG=${SERVICE_RSYSLOG:-enabled}
+  fi
+
   export SERVICE_LOGROTATE_SCRIPT=${SERVICE_LOGROTATE_SCRIPT:-/opt/scripts/purge-mesos-logs.sh}
   export SERVICE_LOGSTASH_FORWARDER_CONF=${SERVICE_LOGSTASH_FORWARDER_CONF:-/opt/logstash-forwarder/mesos-master.conf}
   export SERVICE_REDPILL_MONITOR=${SERVICE_REDPILL_MONITOR:-mesos}
@@ -40,6 +46,9 @@ init_vars() {
       export SERVICE_LOGROTATE=${SERVICE_LOGROTATE:-disabled}
       export SERVICE_LOGSTASH_FORWARDER=${SERVICE_LOGSTASH_FORWARDER:-disabled}
       export SERVICE_REDPILL=${SERVICE_REDPILL:-disabled}
+      if [[ "$SERVICE_CONSUL_TEMPLATE" == "enabled" ]]; then
+        export CONSUL_TEMPLATE_LOG_LEVEL=${CONSUL_TEMPLATE_LOG_LEVEL:-debug}
+      fi
       ;;
    local|*)
       export GLOG_max_log_size=${GLOG_max_log_size:-10}
@@ -58,9 +67,11 @@ main() {
   echo "[$(date)][App-Name] $APP_NAME"
   echo "[$(date)][Environment] $ENVIRONMENT"
 
+  __config_service_consul_template
   __config_service_logrotate
   __config_service_logstash_forwarder
   __config_service_redpill
+  __config_service_rsyslog
 
   echo "[$(date)][Mesos][Start-Command] $SERVICE_MESOS_CMD"
 
