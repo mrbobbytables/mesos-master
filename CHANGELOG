@@ -1,3 +1,7 @@
+2016-01-21 - 1.2.0:
+ - Use new Ubuntu base image.
+ - Consul template and envconsul support added.
+
 2015-12-21 - 1.1.5:
  - Bump to Mesos 0.26.0-0.2.145.ubuntu1404
 
